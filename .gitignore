@@ -1,0 +1,14 @@
+# Environment variables and API keys
+.env
+.env.*
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Local reports generated during development
+reports/test-*
+

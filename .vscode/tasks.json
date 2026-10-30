@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run SEC WATCH desktop app",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				".\\run_sec_watch.py"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

@@ -1,0 +1,141 @@
+{
+  "target": "http://127.0.0.1:62956",
+  "authorization_scope": "Explicitly Authorized Training Lab",
+  "authorized_training_lab": true,
+  "timestamp_utc": "2026-10-30T17:34:24.637937+00:00",
+  "requests_count": 10,
+  "safety_boundaries": {
+    "destructive_checks_disabled": true,
+    "private_loopback_only": true,
+    "explicit_authorization_confirmed": true
+  },
+  "summary": {
+    "total": 15,
+    "high": 4,
+    "medium": 4,
+    "low": 7
+  },
+  "findings": [
+    {
+      "severity": "Medium",
+      "title": "Content Security Policy is missing",
+      "evidence": "The root response does not include Content-Security-Policy.",
+      "recommendation": "Define a restrictive Content-Security-Policy, starting with default-src 'self', and allow only required sources.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-693"
+    },
+    {
+      "severity": "Low",
+      "title": "MIME-sniffing protection is missing",
+      "evidence": "The root response does not include X-Content-Type-Options.",
+      "recommendation": "Set X-Content-Type-Options: nosniff.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-693"
+    },
+    {
+      "severity": "Low",
+      "title": "Clickjacking protection is missing",
+      "evidence": "Neither X-Frame-Options nor a CSP frame-ancestors directive was observed.",
+      "recommendation": "Set an appropriate Content-Security-Policy frame-ancestors directive; X-Frame-Options may be used for legacy clients.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-1021"
+    },
+    {
+      "severity": "Low",
+      "title": "Referrer Policy is missing",
+      "evidence": "The root response does not include Referrer-Policy.",
+      "recommendation": "Set Referrer-Policy to a deliberate value such as strict-origin-when-cross-origin.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-200"
+    },
+    {
+      "severity": "Low",
+      "title": "Permissions Policy is missing",
+      "evidence": "The root response does not include Permissions-Policy.",
+      "recommendation": "Disable browser features the application does not use with Permissions-Policy.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-693"
+    },
+    {
+      "severity": "Low",
+      "title": "Server software banner is exposed",
+      "evidence": "Server response header: SEC-WATCH-Training-Lab ",
+      "recommendation": "Remove or generalize the Server header where practical; keep software patched.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-200"
+    },
+    {
+      "severity": "Low",
+      "title": "Technology stack banner exposed via X-Powered-By",
+      "evidence": "X-Powered-By response header: PHP/8.2.1-dev (Training-Lab)",
+      "recommendation": "Disable or suppress the X-Powered-By header in web application configuration to prevent framework profiling.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-200"
+    },
+    {
+      "severity": "Medium",
+      "title": "Cookie lab_session has missing security attributes",
+      "evidence": "Set-Cookie for lab_session is missing: HttpOnly, SameSite.",
+      "recommendation": "Set Secure on HTTPS cookies, HttpOnly unless JavaScript access is required, and an appropriate SameSite value.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-614"
+    },
+    {
+      "severity": "Medium",
+      "title": "Application is served over unencrypted HTTP",
+      "evidence": "The target origin uses HTTP rather than HTTPS.",
+      "recommendation": "Use HTTPS for applications handling accounts, sessions, or sensitive data; redirect HTTP to HTTPS in production.",
+      "owasp": "A02:2021 - Cryptographic Failures",
+      "cwe": "CWE-319"
+    },
+    {
+      "severity": "High",
+      "title": "Cleartext password authentication form over unencrypted HTTP",
+      "evidence": "A password input field was detected on an unencrypted HTTP page at /.",
+      "recommendation": "Enforce HTTPS across all authentication pages to prevent credentials from being intercepted on the network.",
+      "owasp": "A02:2021 - Cryptographic Failures",
+      "cwe": "CWE-319"
+    },
+    {
+      "severity": "High",
+      "title": "Dangerous HTTP TRACE method enabled (Cross-Site Tracing risk)",
+      "evidence": "OPTIONS / advertised TRACE in Allow header: GET, HEAD, OPTIONS, TRACE.",
+      "recommendation": "Disable the HTTP TRACE method on the web server to prevent Cross-Site Tracing (XST) attacks that steal session cookies.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-693"
+    },
+    {
+      "severity": "Medium",
+      "title": "Directory listing may be exposed at /uploads/",
+      "evidence": "GET /uploads/ returned HTTP 200 with directory-listing content.",
+      "recommendation": "Disable directory indexing and ensure private files are outside the web root or protected by access controls.",
+      "owasp": "A01:2021 - Broken Access Control",
+      "cwe": "CWE-548"
+    },
+    {
+      "severity": "High",
+      "title": "Exposed environment configuration file (/.env)",
+      "evidence": "GET /.env returned HTTP 200 containing application configuration secrets: APP_ENV=local\nAPP_KEY=base64:demo_test_secret_key_12345\nDB_CONNECTION=mysql\nDB_HOST=127.0.0.1\nDB_DATABASE=lab_db\nDB_USER...",
+      "recommendation": "Block public web-server access to .env files and relocate sensitive secrets outside the web root.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-540"
+    },
+    {
+      "severity": "High",
+      "title": "Exposed Git repository metadata (/.git/HEAD)",
+      "evidence": "GET /.git/HEAD returned HTTP 200 revealing repository branch metadata: ref: refs/heads/main.",
+      "recommendation": "Configure the web server to block requests to .git directories and version-control metadata files.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-538"
+    },
+    {
+      "severity": "Low",
+      "title": "Information disclosure in robots.txt",
+      "evidence": "GET /robots.txt returned HTTP 200 advertising path restrictions: User-agent: *\nDisallow: /admin/\nDisallow: /backup/...",
+      "recommendation": "Review robots.txt entries to ensure administrative or private application endpoints are secured with authentication.",
+      "owasp": "A05:2021 - Security Misconfiguration",
+      "cwe": "CWE-200"
+    }
+  ],
+  "errors": []
+}

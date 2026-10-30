@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEC WATCH | Security Assessment Report</title>
+<link rel="icon" type="image/svg+xml" href="./sec-watch-logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  color-scheme: light;
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: 'Orbitron', 'Space Grotesk', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --ink: #0f172a;
+  --muted: #475569;
+  --dim: #64748b;
+  --border: #e2e8f0;
+  --neon-mint: #059669;
+  --neon-cyan: #0284c7;
+  --high: #dc2626;
+  --high-bg: #fef2f2;
+  --med: #d97706;
+  --med-bg: #fffbeb;
+  --low: #0284c7;
+  --low-bg: #f0f9ff;
+  --clean: #059669;
+  --clean-bg: #ecfdf5;
+  --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+}
+* { box-sizing: border-box; }
+body {
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  background: var(--bg);
+  color: var(--ink);
+  background-image:
+    radial-gradient(ellipse 90% 60% at 50% -20%, rgba(2, 132, 199, 0.05), transparent 70%),
+    radial-gradient(circle at 10% 40%, rgba(5, 150, 105, 0.05), transparent 45%),
+    linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 2.5rem 1rem;
+}
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1.8rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.brand-logo {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.12));
+}
+h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #0f172a;
+}
+.subtitle { margin-top: .35rem; color: var(--muted); font-size: 0.95rem; }
+.actions { display: flex; gap: .75rem; }
+.btn {
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .55rem 1.15rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  transition: all .2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+.btn-primary {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #1e293b;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.card {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.35rem;
+  box-shadow: var(--shadow);
+  transition: transform .2s ease;
+}
+.card:hover { transform: translateY(-2px); }
+.card-label {
+  font-family: var(--font-display);
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  font-weight: 750;
+}
+.card-value {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 800;
+  margin-top: .4rem;
+  letter-spacing: .02em;
+  color: #0f172a;
+}
+.card-sub { font-size: .85rem; color: var(--dim); margin-top: .25rem; font-weight: 550; }
+
+.risk-high { color: var(--high); }
+.risk-medium { color: var(--med); }
+.risk-low { color: var(--low); }
+.risk-clean { color: var(--clean); }
+
+.summary-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.4rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  font-size: .92rem;
+}
+.meta-grid div strong { color: #334155; }
+.meta-grid code {
+  font-family: var(--font-mono);
+  color: #0284c7;
+  background: #f0f9ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #bae6fd;
+}
+
+.owasp-table { width: 100%; border-collapse: collapse; margin-top: .8rem; font-size: .9rem; }
+.owasp-table th, .owasp-table td { padding: .65rem .85rem; border: 1px solid var(--border); text-align: left; }
+.owasp-table th {
+  font-family: var(--font-display);
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 750;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: .75rem;
+}
+.owasp-table td { color: #1e293b; }
+
+table.findings-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: .92rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+table.findings-table th, table.findings-table td {
+  padding: .95rem 1.15rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+table.findings-table th {
+  font-family: var(--font-display);
+  background: #f1f5f9;
+  font-weight: 750;
+  color: #334155;
+  text-transform: uppercase;
+  font-size: .75rem;
+  letter-spacing: .08em;
+}
+table.findings-table tr:hover td { background: #f8fafc; }
+
+.severity-badge {
+  display: inline-block;
+  padding: .25rem .6rem;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.severity-badge.high { background: var(--high-bg); color: var(--high); border: 1px solid rgba(220, 38, 38, 0.3); }
+.severity-badge.medium { background: var(--med-bg); color: var(--med); border: 1px solid rgba(217, 119, 6, 0.3); }
+.severity-badge.low { background: var(--low-bg); color: var(--low); border: 1px solid rgba(2, 132, 199, 0.3); }
+
+.owasp-tag { font-family: var(--font-mono); font-size: .8rem; font-weight: 700; color: #0284c7; }
+.cwe-tag {
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  color: var(--muted);
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+.title-cell { color: #0f172a; font-size: .95rem; font-weight: 600; }
+.recom-cell { color: #334155; }
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-weight: 750;
+  font-size: .75rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.count-badge { background: #f1f5f9; color: #0f172a; border: 1px solid var(--border); }
+.scope-badge {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.evidence-box {
+  font-family: var(--font-mono);
+  font-size: .82rem;
+  background: #0f172a;
+  color: #7dd3fc;
+  border: 1px solid #1e293b;
+  padding: .65rem .75rem;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+}
+
+/* AI EXECUTIVE ADVISORY BOX */
+.ai-summary-card {
+  border: 1px solid #a7f3d0;
+  background: linear-gradient(135deg, #f0fdf4, #f0f9ff);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+.ai-box-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: .85rem;
+}
+.ai-box-head h3 {
+  margin: 0;
+  color: #065f46;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.ai-spark { color: #059669; font-size: 1.25rem; }
+.ai-model-tag {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: .75rem;
+  font-weight: 700;
+  color: #065f46;
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.ai-box-body {
+  font-size: .94rem;
+  color: #1e293b;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+.remediation-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.6rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+.remediation-section h3 {
+  margin-top: 0;
+  color: #0f172a;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.remediation-section ul { padding-left: 1.25rem; margin-bottom: 0; }
+.remediation-section li { margin-bottom: .7rem; color: #334155; }
+.remediation-section li strong { color: #0f172a; }
+
+.scope-notice {
+  font-size: .85rem;
+  color: var(--dim);
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  text-align: center;
+}
+.creator-end-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+.creator-name-tag {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: .95rem;
+  font-weight: 900;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #0f172a;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08), rgba(5, 150, 105, 0.08));
+  border: 1px solid rgba(2, 132, 199, 0.3);
+  padding: .35rem 1.3rem;
+  border-radius: 20px;
+  margin-bottom: .4rem;
+}
+.creator-credit-text {
+  font-family: var(--font-sans);
+  font-size: .82rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* CLEAN PRINT TO PDF STYLES */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff !important; color: #000 !important; padding: 0; font-size: 10.5pt; background-image: none !important; }
+  .container { max-width: none; }
+  h1 { background: none !important; -webkit-text-fill-color: #000 !important; color: #000 !important; }
+  .card, tr, .remediation-section, .summary-box, .ai-summary-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+    color: #000 !important;
+    box-shadow: none !important;
+  }
+  .card-value, .title-cell, .recom-cell, .ai-box-body, .remediation-section li, .remediation-section li strong {
+    color: #000 !important;
+  }
+  table.findings-table {
+    background: #fff !important;
+    border: 1px solid #ccc !important;
+  }
+  table.findings-table th {
+    background: #f1f5f9 !important;
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .evidence-box {
+    background: #f8fafc !important;
+    color: #000 !important;
+    border: 1px solid #ccc !important;
+  }
+  .severity-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="brand-group">
+      <svg class="brand-logo" viewBox="0 0 64 64" fill="none">
+        <defs>
+          <linearGradient id="hdrShield" x1="32" y1="4" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#111c2a"/>
+            <stop offset="100%" stop-color="#0a1019"/>
+          </linearGradient>
+          <linearGradient id="hdrNeon" x1="10" y1="10" x2="54" y2="58" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#00F5A0"/>
+            <stop offset="50%" stop-color="#00D2FF"/>
+            <stop offset="100%" stop-color="#3B82F6"/>
+          </linearGradient>
+          <radialGradient id="hdrPulse" cx="32" cy="31" r="8" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#FFFFFF"/>
+            <stop offset="50%" stop-color="#A5F3FC"/>
+            <stop offset="100%" stop-color="#00D2FF" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <path d="M 32 4.5 L 53.5 13.8 C 53.5 28.5 44 47.5 32 59.5 C 20 47.5 10.5 28.5 10.5 13.8 Z" fill="url(#hdrShield)" stroke="url(#hdrNeon)" stroke-width="2.6" stroke-linejoin="round"/>
+        <path d="M 32 10 L 48.5 17.5 C 48.5 29 40.8 44.5 32 54 C 23.2 44.5 15.5 29 15.5 17.5 Z" stroke="#1e3247" stroke-width="1.2" stroke-dasharray="4 3" fill="none"/>
+        <circle cx="32" cy="31" r="16.5" stroke="url(#hdrNeon)" stroke-width="1.4" stroke-dasharray="14 7 4 7" stroke-opacity="0.65"/>
+        <path d="M 17 31 C 22.5 21.5 41.5 21.5 47 31" stroke="url(#hdrNeon)" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M 17 31 C 22.5 40.5 41.5 40.5 47 31" stroke="url(#hdrNeon)" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="32" cy="31" r="8.5" fill="#0c1724" stroke="url(#hdrNeon)" stroke-width="2"/>
+        <circle cx="32" cy="31" r="4.2" fill="url(#hdrPulse)"/>
+        <circle cx="32" cy="24" r="2" fill="#FFFFFF"/>
+        <circle cx="44.5" cy="24" r="2.2" fill="#00F5A0"/>
+        <line x1="32" y1="18.5" x2="32" y2="20.5" stroke="#00F5A0" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="32" y1="41.5" x2="32" y2="43.5" stroke="#00F5A0" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="19.5" y1="31" x2="21.5" y2="31" stroke="#00F5A0" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="42.5" y1="31" x2="44.5" y2="31" stroke="#00F5A0" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1>SEC WATCH Security Assessment</h1>
+        <div class="subtitle">Bounded, non-destructive checks against an authorized local/private lab</div>
+      </div>
+    </div>
+    <div class="actions no-print">
+      <a href="../web_demo/" class="btn" style="text-decoration:none">🌐 Interactive Demo</a>
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    </div>
+  </header>
+
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-label">Security Posture</div>
+      <div class="card-value risk-high">F</div>
+      <div class="card-sub">CRITICAL / HIGH RISK</div>
+    </div>
+    <div class="card">
+      <div class="card-label">High Severity</div>
+      <div class="card-value risk-high">4</div>
+      <div class="card-sub">Immediate action required</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Medium Severity</div>
+      <div class="card-value risk-medium">4</div>
+      <div class="card-sub">Configuration weaknesses</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Low Severity</div>
+      <div class="card-value risk-low">7</div>
+      <div class="card-sub">Hardening indicators</div>
+    </div>
+  </div>
+
+  
+
+  <div class="summary-box">
+    <h3 style="margin-top:0;color:#0f172a">Assessment Scope & Target Overview</h3>
+    <div class="meta-grid">
+      <div><strong>Target Origin:</strong> <code>http://127.0.0.1:49683</code></div>
+      <div><strong>Environment Scope:</strong> <span class="badge scope-badge">Explicitly Authorized Training Lab</span></div>
+      <div><strong>Timestamp:</strong> 2026-10-30 17:57 UTC</div>
+      <div><strong>Total HTTP Requests:</strong> 10</div>
+      <div><strong>Assessor Confirmation:</strong> Explicitly authorized lab scope confirmed</div>
+      <div><strong>Safety Boundaries:</strong> Non-destructive checks, loopback/private IPs only</div>
+    </div>
+
+    <h4 style="margin: 1.25rem 0 .5rem 0;color:#334155">OWASP Top 10 Mapping Breakdown</h4>
+    <table class="owasp-table">
+      <thead><tr><th>OWASP Category</th><th style="width:100px">Findings</th></tr></thead>
+      <tbody><tr><td><strong>A01:2021 - Broken Access Control</strong></td><td><span class="badge count-badge">1</span></td></tr>
+<tr><td><strong>A02:2021 - Cryptographic Failures</strong></td><td><span class="badge count-badge">2</span></td></tr>
+<tr><td><strong>A05:2021 - Security Misconfiguration</strong></td><td><span class="badge count-badge">12</span></td></tr></tbody>
+    </table>
+  </div>
+
+  <h2 style="color:#0f172a;margin-bottom:.85rem">Findings (15)</h2>
+  <table class="findings-table"><thead><tr><th style="width:85px">Risk</th><th style="width:190px">OWASP & CWE</th><th style="width:230px">Finding</th><th>Observed Evidence</th><th>Remediation Recommendation</th></tr></thead><tbody><tr class="finding-row" data-severity="high"><td><span class="severity-badge high">High</span></td><td><span class="owasp-tag">A02:2021 - Cryptographic Failures</span><br><code class="cwe-tag">CWE-319</code></td><td><strong class="title-cell">Cleartext password authentication form over unencrypted HTTP</strong></td><td><pre class="evidence-box">A password input field was detected on an unencrypted HTTP page at /.</pre></td><td><span class="recom-cell">Enforce HTTPS across all authentication pages to prevent credentials from being intercepted on the network.</span></td></tr>
+<tr class="finding-row" data-severity="high"><td><span class="severity-badge high">High</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-693</code></td><td><strong class="title-cell">Dangerous HTTP TRACE method enabled (Cross-Site Tracing risk)</strong></td><td><pre class="evidence-box">OPTIONS / advertised TRACE in Allow header: GET, HEAD, OPTIONS, TRACE.</pre></td><td><span class="recom-cell">Disable the HTTP TRACE method on the web server to prevent Cross-Site Tracing (XST) attacks that steal session cookies.</span></td></tr>
+<tr class="finding-row" data-severity="high"><td><span class="severity-badge high">High</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-540</code></td><td><strong class="title-cell">Exposed environment configuration file (/.env)</strong></td><td><pre class="evidence-box">GET /.env returned HTTP 200 containing application configuration secrets: APP_ENV=local
+APP_KEY=base64:demo_test_secret_key_12345
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_DATABASE=lab_db
+DB_USER...</pre></td><td><span class="recom-cell">Block public web-server access to .env files and relocate sensitive secrets outside the web root.</span></td></tr>
+<tr class="finding-row" data-severity="high"><td><span class="severity-badge high">High</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-538</code></td><td><strong class="title-cell">Exposed Git repository metadata (/.git/HEAD)</strong></td><td><pre class="evidence-box">GET /.git/HEAD returned HTTP 200 revealing repository branch metadata: ref: refs/heads/main.</pre></td><td><span class="recom-cell">Configure the web server to block requests to .git directories and version-control metadata files.</span></td></tr>
+<tr class="finding-row" data-severity="medium"><td><span class="severity-badge medium">Medium</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-693</code></td><td><strong class="title-cell">Content Security Policy is missing</strong></td><td><pre class="evidence-box">The root response does not include Content-Security-Policy.</pre></td><td><span class="recom-cell">Define a restrictive Content-Security-Policy, starting with default-src &#x27;self&#x27;, and allow only required sources.</span></td></tr>
+<tr class="finding-row" data-severity="medium"><td><span class="severity-badge medium">Medium</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-614</code></td><td><strong class="title-cell">Cookie lab_session has missing security attributes</strong></td><td><pre class="evidence-box">Set-Cookie for lab_session is missing: HttpOnly, SameSite.</pre></td><td><span class="recom-cell">Set Secure on HTTPS cookies, HttpOnly unless JavaScript access is required, and an appropriate SameSite value.</span></td></tr>
+<tr class="finding-row" data-severity="medium"><td><span class="severity-badge medium">Medium</span></td><td><span class="owasp-tag">A02:2021 - Cryptographic Failures</span><br><code class="cwe-tag">CWE-319</code></td><td><strong class="title-cell">Application is served over unencrypted HTTP</strong></td><td><pre class="evidence-box">The target origin uses HTTP rather than HTTPS.</pre></td><td><span class="recom-cell">Use HTTPS for applications handling accounts, sessions, or sensitive data; redirect HTTP to HTTPS in production.</span></td></tr>
+<tr class="finding-row" data-severity="medium"><td><span class="severity-badge medium">Medium</span></td><td><span class="owasp-tag">A01:2021 - Broken Access Control</span><br><code class="cwe-tag">CWE-548</code></td><td><strong class="title-cell">Directory listing may be exposed at /uploads/</strong></td><td><pre class="evidence-box">GET /uploads/ returned HTTP 200 with directory-listing content.</pre></td><td><span class="recom-cell">Disable directory indexing and ensure private files are outside the web root or protected by access controls.</span></td></tr>
+<tr class="finding-row" data-severity="low"><td><span class="severity-badge low">Low</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-693</code></td><td><strong class="title-cell">MIME-sniffing protection is missing</strong></td><td><pre class="evidence-box">The root response does not include X-Content-Type-Options.</pre></td><td><span class="recom-cell">Set X-Content-Type-Options: nosniff.</span></td></tr>
+<tr class="finding-row" data-severity="low"><td><span class="severity-badge low">Low</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-1021</code></td><td><strong class="title-cell">Clickjacking protection is missing</strong></td><td><pre class="evidence-box">Neither X-Frame-Options nor a CSP frame-ancestors directive was observed.</pre></td><td><span class="recom-cell">Set an appropriate Content-Security-Policy frame-ancestors directive; X-Frame-Options may be used for legacy clients.</span></td></tr>
+<tr class="finding-row" data-severity="low"><td><span class="severity-badge low">Low</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-200</code></td><td><strong class="title-cell">Referrer Policy is missing</strong></td><td><pre class="evidence-box">The root response does not include Referrer-Policy.</pre></td><td><span class="recom-cell">Set Referrer-Policy to a deliberate value such as strict-origin-when-cross-origin.</span></td></tr>
+<tr class="finding-row" data-severity="low"><td><span class="severity-badge low">Low</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-693</code></td><td><strong class="title-cell">Permissions Policy is missing</strong></td><td><pre class="evidence-box">The root response does not include Permissions-Policy.</pre></td><td><span class="recom-cell">Disable browser features the application does not use with Permissions-Policy.</span></td></tr>
+<tr class="finding-row" data-severity="low"><td><span class="severity-badge low">Low</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-200</code></td><td><strong class="title-cell">Server software banner is exposed</strong></td><td><pre class="evidence-box">Server response header: SEC-WATCH-Training-Lab </pre></td><td><span class="recom-cell">Remove or generalize the Server header where practical; keep software patched.</span></td></tr>
+<tr class="finding-row" data-severity="low"><td><span class="severity-badge low">Low</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-200</code></td><td><strong class="title-cell">Technology stack banner exposed via X-Powered-By</strong></td><td><pre class="evidence-box">X-Powered-By response header: PHP/8.2.1-dev (Training-Lab)</pre></td><td><span class="recom-cell">Disable or suppress the X-Powered-By header in web application configuration to prevent framework profiling.</span></td></tr>
+<tr class="finding-row" data-severity="low"><td><span class="severity-badge low">Low</span></td><td><span class="owasp-tag">A05:2021 - Security Misconfiguration</span><br><code class="cwe-tag">CWE-200</code></td><td><strong class="title-cell">Information disclosure in robots.txt</strong></td><td><pre class="evidence-box">GET /robots.txt returned HTTP 200 advertising path restrictions: User-agent: *
+Disallow: /admin/
+Disallow: /backup/...</pre></td><td><span class="recom-cell">Review robots.txt entries to ensure administrative or private application endpoints are secured with authentication.</span></td></tr></tbody></table>
+
+  
+
+  <section class="remediation-section">
+    <h3>Prioritized Remediation Action Plan</h3>
+    <p style="color:var(--muted);font-size:.9rem">Address High risk findings first, followed by Medium and Low configuration hardening:</p>
+    <ul><li><strong>[High] Cleartext password authentication form over unencrypted HTTP:</strong> Enforce HTTPS across all authentication pages to prevent credentials from being intercepted on the network.</li>
+<li><strong>[High] Dangerous HTTP TRACE method enabled (Cross-Site Tracing risk):</strong> Disable the HTTP TRACE method on the web server to prevent Cross-Site Tracing (XST) attacks that steal session cookies.</li>
+<li><strong>[High] Exposed environment configuration file (/.env):</strong> Block public web-server access to .env files and relocate sensitive secrets outside the web root.</li>
+<li><strong>[High] Exposed Git repository metadata (/.git/HEAD):</strong> Configure the web server to block requests to .git directories and version-control metadata files.</li>
+<li><strong>[Medium] Content Security Policy is missing:</strong> Define a restrictive Content-Security-Policy, starting with default-src &#x27;self&#x27;, and allow only required sources.</li>
+<li><strong>[Medium] Cookie lab_session has missing security attributes:</strong> Set Secure on HTTPS cookies, HttpOnly unless JavaScript access is required, and an appropriate SameSite value.</li>
+<li><strong>[Medium] Application is served over unencrypted HTTP:</strong> Use HTTPS for applications handling accounts, sessions, or sensitive data; redirect HTTP to HTTPS in production.</li>
+<li><strong>[Medium] Directory listing may be exposed at /uploads/:</strong> Disable directory indexing and ensure private files are outside the web root or protected by access controls.</li>
+<li><strong>[Low] MIME-sniffing protection is missing:</strong> Set X-Content-Type-Options: nosniff.</li>
+<li><strong>[Low] Clickjacking protection is missing:</strong> Set an appropriate Content-Security-Policy frame-ancestors directive; X-Frame-Options may be used for legacy clients.</li>
+<li><strong>[Low] Referrer Policy is missing:</strong> Set Referrer-Policy to a deliberate value such as strict-origin-when-cross-origin.</li>
+<li><strong>[Low] Permissions Policy is missing:</strong> Disable browser features the application does not use with Permissions-Policy.</li>
+<li><strong>[Low] Server software banner is exposed:</strong> Remove or generalize the Server header where practical; keep software patched.</li>
+<li><strong>[Low] Technology stack banner exposed via X-Powered-By:</strong> Disable or suppress the X-Powered-By header in web application configuration to prevent framework profiling.</li>
+<li><strong>[Low] Information disclosure in robots.txt:</strong> Review robots.txt entries to ensure administrative or private application endpoints are secured with authentication.</li></ul>
+  </section>
+
+  <footer class="scope-notice">
+    <div class="creator-end-card">
+      <div class="creator-name-tag">LOHITHA .K</div>
+      <div class="creator-credit-text">Designed & Developed @ 2026 | All Rights Reserved</div>
+    </div>
+    <p style="margin:0;padding-top:.85rem;border-top:1px dashed var(--border);font-size:.82rem;">
+      <strong>Scope & Safety Boundary:</strong> Assessment is restricted to the supplied local/private IP origin and fixed paths in this tool.
+      Redirects are not followed. Directory checks use non-destructive GET on a short fixed list; HTTP-method checking
+      uses OPTIONS only. Review each result in the context of the application before deployment to production.
+    </p>
+  </footer>
+</div>
+</body>
+</html>

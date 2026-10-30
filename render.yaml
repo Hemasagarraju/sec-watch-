@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: sec-watch-demo
+    runtime: static
+    buildCommand: echo "No build required"
+    staticPublishPath: ./

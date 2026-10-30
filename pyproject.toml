@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sec-watch"
+version = "1.0.0"
+description = "A beginner-friendly desktop security checker for authorized local web labs"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+sec-watch = "sec_watch.gui:main"
+sec-watch-cli = "sec_watch.assessment:main"
+
+[tool.setuptools]
+packages = ["sec_watch"]

@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090d16">
+  <meta name="description" content="SEC WATCH — Autonomous Security Operations & Officer Authentication Gateway.">
+  <link rel="icon" type="image/svg+xml" href="./sec-watch-logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>SEC WATCH | Security Officer Authentication Gateway</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    :root {
+      color-scheme: light;
+      --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-display: 'Orbitron', 'Space Grotesk', -apple-system, sans-serif;
+      --font-tech: 'Rajdhani', 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
+      --bg: #f8fafc;
+      --bg-card: #ffffff;
+      --line: #e2e8f0;
+      --ink: #0f172a;
+      --ink-heading: #0f172a;
+      --muted: #475569;
+      --dim: #64748b;
+      --neon-mint: #059669;
+      --neon-cyan: #0284c7;
+      --high: #dc2626;
+      --card-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.1), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+    }
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #090d16;
+      --bg-card: rgba(15, 23, 42, 0.85);
+      --line: rgba(255, 255, 255, 0.08);
+      --ink: #f8fafc;
+      --ink-heading: #ffffff;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --neon-mint: #00f5a0;
+      --neon-cyan: #00d2ff;
+      --high: #ff3366;
+      --card-shadow: 0 16px 50px -10px rgba(0,0,0,0.7), 0 0 30px rgba(0, 245, 160, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(2, 132, 199, 0.08), transparent 70%),
+        radial-gradient(circle at 15% 50%, rgba(5, 150, 105, 0.06), transparent 50%),
+        linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+      background-attachment: fixed;
+      transition: background-color .25s ease, color .25s ease;
+    }
+    [data-theme="dark"] body {
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 245, 160, 0.15), transparent 70%),
+        radial-gradient(circle at 15% 50%, rgba(0, 210, 255, 0.1), transparent 50%),
+        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+    }
+
+    .top-bar-controls {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .theme-btn {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-heading);
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all .2s;
+    }
+    .theme-btn:hover {
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    /* AUTH CARD */
+    .login-wrapper {
+      width: 100%;
+      max-width: 480px;
+      margin: auto;
+    }
+    .login-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 36px 32px;
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: all .25s ease;
+    }
+    .login-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #0284c7, #059669, #0284c7);
+    }
+    [data-theme="dark"] .login-card {
+      border-color: rgba(0, 245, 160, 0.25);
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 26px;
+    }
+    .logo-pulse-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+    .logo-img {
+      width: 60px;
+      height: 60px;
+      display: block;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+    }
+    .brand-title {
+      margin: 0 0 6px;
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ink-heading);
+    }
+    .brand-title span {
+      background: linear-gradient(135deg, #0f172a 30%, #0284c7 70%, #059669 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    [data-theme="dark"] .brand-title span {
+      background: linear-gradient(135deg, #ffffff 40%, var(--neon-mint) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .card-subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .auth-scope-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-family: var(--font-display);
+      font-size: 9.5px;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--neon-mint);
+      background: rgba(5, 150, 105, 0.08);
+      border: 1px solid rgba(5, 150, 105, 0.25);
+    }
+    [data-theme="dark"] .auth-scope-badge {
+      color: var(--neon-mint);
+      background: rgba(0, 245, 160, 0.12);
+      border-color: rgba(0, 245, 160, 0.3);
+    }
+
+    /* FORM STYLING */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      margin-bottom: 7px;
+      font-family: var(--font-display);
+      font-size: 10.5px;
+      font-weight: 750;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      font-size: 15px;
+      color: var(--dim);
+      pointer-events: none;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px 0 42px;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+      transition: all .2s ease;
+    }
+    .form-input:focus, .form-select:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      background: var(--bg-card);
+    }
+    [data-theme="dark"] .form-input, [data-theme="dark"] .form-select {
+      background: rgba(15, 23, 42, 0.6);
+      color: #fff;
+    }
+    [data-theme="dark"] .form-input:focus, [data-theme="dark"] .form-select:focus {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 14px rgba(0, 210, 255, 0.25);
+    }
+
+    .eye-toggle-btn {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      color: var(--dim);
+      padding: 4px;
+    }
+    .eye-toggle-btn:hover { color: var(--ink-heading); }
+
+    /* CHECKBOX */
+    .checkbox-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 18px 0 22px;
+      font-size: 12px;
+      color: var(--muted);
+      cursor: pointer;
+      line-height: 1.45;
+    }
+    .checkbox-wrap input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: var(--neon-mint);
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+    }
+
+    /* SUBMIT BUTTON */
+    .btn-submit {
+      width: 100%;
+      height: 46px;
+      cursor: pointer;
+      border: 1px solid #0f172a;
+      border-radius: 10px;
+      background: #0f172a;
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all .2s ease;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+    }
+    .btn-submit:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25);
+    }
+    [data-theme="dark"] .btn-submit {
+      background: linear-gradient(135deg, #059669, #0284c7);
+      border-color: rgba(0, 245, 160, 0.4);
+      box-shadow: 0 4px 20px rgba(0, 245, 160, 0.25);
+    }
+    [data-theme="dark"] .btn-submit:hover {
+      background: linear-gradient(135deg, #047857, #0369a1);
+      box-shadow: 0 6px 24px rgba(0, 245, 160, 0.4);
+    }
+
+    /* QUICK DEMO PRESETS */
+    .quick-preset-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 22px 0 14px;
+      color: var(--dim);
+      font-family: var(--font-display);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .quick-preset-divider::before, .quick-preset-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+    .quick-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .btn-quick {
+      cursor: pointer;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--muted);
+      font-family: var(--font-tech);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all .2s ease;
+    }
+    .btn-quick:hover {
+      border-color: #cbd5e1;
+      background: var(--bg-card);
+      color: var(--ink-heading);
+      transform: translateY(-1px);
+    }
+    [data-theme="dark"] .btn-quick {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+    }
+    [data-theme="dark"] .btn-quick:hover {
+      border-color: var(--neon-cyan);
+      color: #fff;
+      background: rgba(2, 132, 199, 0.12);
+    }
+
+    /* STATUS MESSAGE */
+    .status-msg {
+      display: none;
+      margin-top: 16px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .status-msg.success {
+      display: block;
+      color: #065f46;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+    }
+    [data-theme="dark"] .status-msg.success {
+      color: var(--neon-mint);
+      background: rgba(0, 245, 160, 0.12);
+      border-color: rgba(0, 245, 160, 0.3);
+    }
+
+    /* BOTTOM PORTALS */
+    .portal-quick-links {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 20px;
+      font-size: 12px;
+    }
+    .portal-quick-links a {
+      color: var(--dim);
+      text-decoration: none;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      transition: color .2s;
+    }
+    .portal-quick-links a:hover {
+      color: var(--neon-cyan);
+    }
+
+    /* CREATOR TAG UPSIDE ON END MIDDLE */
+    .creator-end-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 24px auto 0;
+      padding-top: 16px;
+      border-top: 1px dashed var(--line);
+      text-align: center;
+    }
+    .creator-name-tag {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 14.5px;
+      font-weight: 900;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--ink-heading);
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.08), rgba(5, 150, 105, 0.08));
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      padding: 6px 20px;
+      border-radius: 20px;
+      margin-bottom: 7px;
+    }
+    [data-theme="dark"] .creator-name-tag {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(0, 245, 160, 0.15), rgba(0, 210, 255, 0.12));
+      border-color: rgba(0, 245, 160, 0.4);
+      box-shadow: 0 0 16px rgba(0, 245, 160, 0.18);
+    }
+    .creator-credit-text {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: normal;
+      text-transform: none;
+    }
+    [data-theme="dark"] .creator-credit-text {
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- THEME TOGGLE -->
+  <div class="top-bar-controls">
+    <button class="theme-btn" id="theme-toggle" type="button" aria-label="Toggle theme">☀️ White Theme</button>
+  </div>
+
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="card-header">
+        <div class="logo-pulse-wrap">
+          <img class="logo-img" src="./sec-watch-logo.svg" alt="SEC WATCH Shield Logo">
+        </div>
+        <h1 class="brand-title"><span>SEC WATCH</span></h1>
+        <p class="card-subtitle">Autonomous Security Operations & Intelligence Gateway</p>
+        <span class="auth-scope-badge">● Explicitly Authorized Training Access</span>
+      </div>
+
+      <form id="login-form">
+        <!-- IDENTIFIER -->
+        <div class="form-group">
+          <label class="form-label" for="user-id">Security Officer Identifier / Username (e.g. <code>lohitha</code>)</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input class="form-input" id="user-id" type="text" placeholder="e.g. lohitha or lohitha@secwatch.lab" value="lohitha" required autocomplete="username">
+          </div>
+        </div>
+
+        <!-- PASSPHRASE -->
+        <div class="form-group">
+          <label class="form-label" for="user-pass">Security Access Passphrase</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input class="form-input" id="user-pass" type="password" placeholder="Enter security passphrase" value="••••••••••••" required autocomplete="current-password">
+            <button class="eye-toggle-btn" id="toggle-pass" type="button" aria-label="Toggle password visibility">👁️</button>
+          </div>
+        </div>
+
+        <!-- CLEARANCE LEVEL -->
+        <div class="form-group">
+          <label class="form-label" for="user-clearance">Security Clearance Level</label>
+          <div class="input-wrap">
+            <span class="input-icon">🛡️</span>
+            <select class="form-select" id="user-clearance">
+              <option value="L3 - Lead Security Analyst" selected>Level 3: Lead Security Analyst (Full AI & Telemetry Access)</option>
+              <option value="L2 - Penetration Tester">Level 2: Authorized Penetration Tester</option>
+              <option value="L1 - Student Security Researcher">Level 1: Student Security Researcher (Training Mode)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- AUTHORIZATION CERTIFICATION CHECKBOX -->
+        <label class="checkbox-wrap">
+          <input type="checkbox" id="auth-agree" checked required>
+          <span>I certify that this session operates within an <strong>Explicitly Authorized Training Lab</strong> or student-owned localhost application.</span>
+        </label>
+
+        <!-- SUBMIT BUTTON -->
+        <button class="btn-submit" type="submit" id="submit-btn">
+          <span>⚡ Authenticate & Enter Command Center</span>
+        </button>
+
+        <div class="status-msg" id="status-msg"></div>
+
+        <!-- 1-CLICK QUICK LOGINS FOR EVALUATION -->
+        <div class="quick-preset-divider">1-Click Evaluation Logins</div>
+        <div class="quick-btns">
+          <button class="btn-quick" id="btn-quick-lohitha" type="button" style="border-color:var(--neon-cyan);background:rgba(2,132,199,0.08);color:var(--ink-heading);font-weight:700;">
+            <span>⭐ Quick Lohitha L3</span>
+          </button>
+          <button class="btn-quick" id="btn-quick-analyst" type="button">
+            <span>🛡️ Analyst L3</span>
+          </button>
+          <button class="btn-quick" id="btn-quick-student" type="button">
+            <span>🎓 Student L1</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- PORTAL LINKS -->
+      <div class="portal-quick-links">
+        <a href="./web_demo/">🌐 Open Command Dashboard</a>
+        <span style="color:var(--dim)">·</span>
+        <a href="./reports/sec-watch-report.html" target="_blank">📑 Assessment Report ↗</a>
+      </div>
+
+      <!-- CREATOR TAG UPSIDE ON END MIDDLE -->
+      <div class="creator-end-card">
+        <div class="creator-name-tag">LOHITHA .K</div>
+        <div class="creator-credit-text">Designed & Developed @ 2026 | All Rights Reserved</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      // Theme Toggle Logic
+      const themeToggle = document.getElementById("theme-toggle");
+      const savedTheme = localStorage.getItem("sec-watch-theme") || "white";
+      if (savedTheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        if (themeToggle) themeToggle.textContent = "🌙 Dark Theme";
+      } else {
+        document.documentElement.setAttribute("data-theme", "white");
+        if (themeToggle) themeToggle.textContent = "☀️ White Theme";
+      }
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+          const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+          const newTheme = isDark ? "white" : "dark";
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("sec-watch-theme", newTheme);
+          themeToggle.textContent = newTheme === "dark" ? "🌙 Dark Theme" : "☀️ White Theme";
+        });
+      }
+
+      // Password Toggle
+      const passInput = document.getElementById("user-pass");
+      const togglePassBtn = document.getElementById("toggle-pass");
+      if (togglePassBtn && passInput) {
+        togglePassBtn.addEventListener("click", () => {
+          const isText = passInput.type === "text";
+          passInput.type = isText ? "password" : "text";
+          togglePassBtn.textContent = isText ? "👁️" : "🙈";
+        });
+      }
+
+      // Login Submission Handler
+      const form = document.getElementById("login-form");
+      const statusMsg = document.getElementById("status-msg");
+      const submitBtn = document.getElementById("submit-btn");
+
+      // Check existing active session
+      const existingAuth = localStorage.getItem("sec_watch_auth");
+      if (existingAuth && statusMsg) {
+        try {
+          const authData = JSON.parse(existingAuth);
+          if (authData && authData.authenticated) {
+            statusMsg.className = "status-msg";
+            statusMsg.style.display = "block";
+            statusMsg.innerHTML = `Active session detected: <strong>${authData.user}</strong>. <a href="./web_demo/" style="color:var(--neon-cyan);text-decoration:none;font-weight:700;margin-left:6px;">Open Dashboard →</a>`;
+          }
+        } catch (e) {}
+      }
+
+      function executeLogin(identifier, clearance) {
+        submitBtn.innerHTML = `<span>⏳ Authenticating Security Handshake...</span>`;
+        submitBtn.disabled = true;
+
+        const effectiveUser = identifier || "lohitha";
+        const sessionData = {
+          user: effectiveUser,
+          clearance: clearance,
+          loginTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          authenticated: true
+        };
+        localStorage.setItem("sec_watch_auth", JSON.stringify(sessionData));
+        sessionStorage.setItem("sec_watch_auth", JSON.stringify(sessionData));
+
+        statusMsg.className = "status-msg success";
+        statusMsg.style.display = "block";
+        statusMsg.textContent = `✓ Clearance Granted: ${clearance} for ${effectiveUser}. Redirecting to Command Center...`;
+
+        setTimeout(() => {
+          window.location.href = "./web_demo/";
+        }, 650);
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const userId = document.getElementById("user-id").value.trim() || "lohitha";
+        const clearance = document.getElementById("user-clearance").value;
+        executeLogin(userId, clearance);
+      });
+
+      // Quick Evaluation Buttons
+      const btnQuickLohitha = document.getElementById("btn-quick-lohitha");
+      const btnQuickAnalyst = document.getElementById("btn-quick-analyst");
+      const btnQuickStudent = document.getElementById("btn-quick-student");
+
+      if (btnQuickLohitha) {
+        btnQuickLohitha.addEventListener("click", () => {
+          document.getElementById("user-id").value = "lohitha";
+          document.getElementById("user-clearance").value = "L3 - Lead Security Analyst";
+          executeLogin("lohitha", "L3 - Lead Security Analyst");
+        });
+      }
+
+      if (btnQuickAnalyst) {
+        btnQuickAnalyst.addEventListener("click", () => {
+          document.getElementById("user-id").value = "analyst@secwatch.lab";
+          document.getElementById("user-clearance").value = "L3 - Lead Security Analyst";
+          executeLogin("analyst@secwatch.lab", "L3 - Lead Security Analyst");
+        });
+      }
+
+      if (btnQuickStudent) {
+        btnQuickStudent.addEventListener("click", () => {
+          document.getElementById("user-id").value = "student@secwatch.lab";
+          document.getElementById("user-clearance").value = "L1 - Student Security Researcher";
+          executeLogin("student@secwatch.lab", "L1 - Student Security Researcher");
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+
